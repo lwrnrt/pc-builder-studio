@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>装机大师 · PC Builder Studio — 智能配置 / 兼容检测 / 装机模拟</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== 顶部导航 ===== -->
+<header class="topbar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">
+      <svg viewBox="0 0 40 40" fill="none">
+        <rect x="6" y="6" width="28" height="28" rx="6" stroke="url(#lg)" stroke-width="2.4"/>
+        <rect x="14" y="14" width="12" height="12" rx="2.5" fill="url(#lg)"/>
+        <path d="M20 2v5M20 33v5M2 20h5M33 20h5M8 8l3 3M32 8l-3 3M8 32l3-3M32 32l-3-3" stroke="url(#lg)" stroke-width="2.2" stroke-linecap="round"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs>
+      </svg>
+    </span>
+    <div>装机大师 <small>PC BUILDER STUDIO</small></div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-view="home" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/></svg>首页</button>
+    <button data-view="recommend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3L8 13.3l-6-4.4h7.6z" stroke-linejoin="round"/></svg>智能推荐</button>
+    <button data-view="build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>组装中心</button>
+    <button data-view="perf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18" stroke-linecap="round"/><path d="M7 14l3-4 3 3 5-7" stroke-linecap="round" stroke-linejoin="round"/></svg>性能评估</button>
+    <!-- 装机模拟已合并至「组装中心」 -->
+  </nav>
+  <button class="save-btn" id="btnSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke-linejoin="round"/><path d="M7 3v6h8V3M7 21v-6h10v6" stroke-linejoin="round"/></svg>保存/分享</button>
+</header>
+
+<main>
+  <!-- ===== 首页 ===== -->
+  <section class="view active" id="view-home">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">智能装机 · 一站式</div>
+        <h1>把 DIY 装机<br>变成 <span class="grad">零门槛的事</span></h1>
+        <p>输入你的用途和预算，秒出 3–5 套分档方案；全品类配件自由选配，接口/功耗/尺寸/内存兼容性实时检测；还能拖拽模拟真实装机流程，生成性能评估报告并一键分享。</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn" data-goto="recommend">开始智能推荐</button>
+          <button class="btn ghost" data-goto="build">手动组装</button>
+        </div>
+        <div class="hero-stats">
+          <div class="s"><strong id="stat-parts">0</strong><span>在库配件</span></div>
+          <div class="s"><strong>9</strong><span>配件品类</span></div>
+          <div class="s"><strong>9</strong><span>兼容性规则</span></div>
+          <div class="s"><strong>实时</strong><span>冲突检测</span></div>
+        </div>
+      </div>
+      <div class="hero-visual"><canvas id="heroCanvas"></canvas></div>
+    </div>
+
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:40px">
+      <div class="panel">
+        <div class="eyebrow">功能 01</div>
+        <h3 style="font-size:16px;margin:6px 0">个性化配置推荐</h3>
+        <p style="color:var(--muted);font-size:13.5px">按用途与预算自动生成分档方案，含完整清单、逐项与总价、场景说明与性价比评级。</p>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">功能 02</div>
+        <h3 style="font-size:16px;margin:6px 0">自定义选配 + 兼容检测</h3>
+        <p style="color:var(--muted);font-size:13.5px">全品类配件库按品牌/型号/价位筛选，接口、功耗、尺寸、内存频率冲突即时高亮并给替代建议。</p>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">功能 03</div>
+        <h3 style="font-size:16px;margin:6px 0">性能模拟评估</h3>
+        <p style="color:var(--muted);font-size:13.5px">百分制综合评分、各场景表现预估、功耗估算、散热建议与升级潜力分析一目了然。</p>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">功能 04</div>
+        <h3 style="font-size:16px;margin:6px 0">拖拽装机模拟</h3>
+        <p style="color:var(--muted);font-size:13.5px">主板插槽可视化，拖拽配件到 CPU/内存/PCIe/M.2/电源插槽，符合装机顺序，实时状态反馈。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 智能推荐 ===== -->
+  <section class="view" id="view-recommend">
+    <div class="eyebrow">STEP 01</div>
+    <h2 class="section-title">个性化配置推荐</h2>
+    <p class="section-sub">选择使用场景（可多选）+ 设定预算范围，系统自动生成多套分档方案，并均衡兼顾所选的多个场景。</p>
+
+    <div class="panel">
+      <div class="field">
+        <label>使用场景（可多选）</label>
+        <div class="chips" id="ucChips">
+          <button class="chip active" data-uc="game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="5"/><path d="M7 12h2M8 11v2M15 11h.01M18 13h.01" stroke-linecap="round"/></svg>游戏娱乐</button>
+          <button class="chip" data-uc="design"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.5 7.5" stroke-linecap="round"/></svg>设计创作</button>
+          <button class="chip" data-uc="office"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3" stroke-linecap="round"/></svg>办公上网</button>
+          <button class="chip" data-uc="video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="M16 9l6-3v12l-6-3" stroke-linejoin="round"/></svg>视频剪辑</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>预算范围 <span class="hint" id="budgetHint"></span></label>
+        <div class="range-row">
+          <input type="range" id="budgetMin" min="3000" max="30000" step="500" value="5000">
+          <span class="budget-val" id="budgetMinVal">¥5000</span>
+        </div>
+        <div class="range-row">
+          <input type="range" id="budgetMax" min="3000" max="30000" step="500" value="9000">
+          <span class="budget-val" id="budgetMaxVal">¥9000</span>
+        </div>
+      </div>
+      <button class="btn" id="btnRecommend">生成推荐方案</button>
+    </div>
+
+    <div class="plans" id="planList"></div>
+  </section>
+
+  <!-- ===== 组装中心（选配 + 装机 合并）===== -->
+  <section class="view" id="view-build">
+    <div class="eyebrow">STEP 02</div>
+    <h2 class="section-title">组装中心</h2>
+    <p class="section-sub">从左侧配件库把组件拖拽到主板插槽即可完成安装（亦可点击直接装入），全程实时兼容性检测。</p>
+
+    <div class="workbench">
+      <!-- 左：配件库 -->
+      <div class="panel lib-card">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/></svg>
+          <input type="text" id="partSearch" placeholder="搜索型号 / 品牌…">
+        </div>
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="filters" id="partFilters"></div>
+        <div class="part-list" id="partList" style="margin-top:12px"></div>
+      </div>
+
+      <!-- 中：主板装机板 -->
+      <div class="panel board-card">
+        <h3 style="font-size:15px;margin-bottom:4px">主板装机板</h3>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:12px">拖拽左侧组件到对应插槽 →</p>
+        <div class="mobo" id="mobo">
+          <div class="mobo-label">MAINBOARD</div>
+          <div class="mobo-grid"></div>
+        </div>
+        <p style="font-size:12px;color:var(--dim);margin-top:12px;text-align:center">安装顺序建议：主板固定 → CPU → 散热 → 内存 → M.2 硬盘 → 显卡 → 电源</p>
+        <div class="assembly-actions" style="margin-top:14px">
+          <button class="btn ghost sm" id="btnResetBuild">清空配置</button>
+        </div>
+        <div class="conflicts-below">
+          <h4 class="conflicts-title">兼容性提示</h4>
+          <div id="issuesBox" class="issues"></div>
+        </div>
+      </div>
+
+      <!-- 右：配置汇总 -->
+      <div class="panel summary-card" id="buildSummary">
+        <h3 style="font-size:16px;margin-bottom:12px">配置清单 / 总价</h3>
+        <div id="compatBanner"></div>
+        <table class="build-table">
+          <tbody id="buildTableBody"></tbody>
+        </table>
+        <div class="c-sum"><span class="lbl">预估总价</span><span class="amt" id="customTotal">¥0</span></div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn sm" data-goto="perf">性能评估</button>
+          <button class="btn ghost sm" id="btnSaveFromBuild">保存 / 分享</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 性能评估 ===== -->
+  <section class="view" id="view-perf">
+    <div class="eyebrow">STEP 03</div>
+    <h2 class="section-title">性能模拟与评估</h2>
+    <p class="section-sub">基于当前配置生成综合评估报告。</p>
+    <div id="perfContent"></div>
+  </section>
+
+  <!-- 装机模拟功能已合并至「组装中心」#view-build -->
+</main>
+
+<footer>
+  <b>装机大师 PC Builder Studio</b> · 数据为示意演示，价格与规格仅供参考，实际以商家为准 · 纯前端本地应用，无需联网
+</footer>
+
+<!-- 保存/分享 模态 -->
+<div class="modal-bg" id="shareModal">
+  <div class="modal">
+    <h3>保存 / 分享 / 导出配置</h3>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn" id="btnSaveLocal">保存到本机（浏览器）</button>
+      <button class="btn ghost" id="btnLoadLocal">读取上次保存</button>
+      <label style="font-size:13px;color:var(--muted);margin-top:6px">分享链接（复制发送给他人打开即还原配置）</label>
+      <textarea id="shareText" readonly></textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn sm" id="btnCopyLink">复制链接</button>
+        <button class="btn ghost sm" id="btnCopyJson">复制配置单文本</button>
+        <button class="btn ghost sm" id="btnDownload">下载 .json</button>
+      </div>
+    </div>
+    <div class="m-actions"><button class="btn ghost" id="btnCloseModal">关闭</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="engine.js"></script>
+<script src="icons.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
